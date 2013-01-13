@@ -1,31 +1,52 @@
-var Artist = Backbone.Model.extend({
+$(function () {
 
-});
+    var Tweet = Backbone.Model.extend();
 
-var ArtistList = Backbone.Collection.extend({
-    model:Artist
-});
+    var TweetList = Backbone.Collection.extend({
+        model:Tweet,
 
-var Artists = new ArtistList;
+        url:function () {
+            return "https://api.twitter.com/1/statuses/user_timeline.json?include_entities=true&include_rts=true&screen_name=chrisbushelloz&count=10";
+        }
+    });
 
-var ArtistsView = Backbone.View.extend({
+    var TweetView = Backbone.View.extend({
+    });
 
-});
+    var Tweets = new TweetList;
 
 
-var AppView = Backbone.View.extend({
+    var AppView = Backbone.View.extend({
+            el:$("#foobarbaz-app"),
 
-    events:{
-        "keypress #new-artist":"searchForArtist"
-    },
+            events:{
+                "keypress #twitter-id":"twitterSearch"
+            },
 
-    searchForArtist:function (e) {
-        if (e.keyCode != 13) return;
-        if (!this.input.val()) return;
+            initialize:function () {
+                this.input = this.$("#twitter-id");
+            },
 
-        Artists.create({name:this.input.val()});
-        this.input.val('');
-    }
-});
+            twitterSearch:function (e) {
+                if (e.keyCode != 13) return;
+                if (!this.input.val()) return;
 
-var App = new AppView;
+                $.ajax({
+                    dataType:"json",
+                    url:"http://search.twitter.com/search.json?callback=?&q=" + this.input.val(),
+                    success:function (json) {
+                        $.each(json.results, function (k, v) {
+                            console.log(v);
+                        });
+                    }
+                });
+
+//            Tweets.create({name:this.input.val()});
+                this.input.val('');
+            }
+        })
+        ;
+
+    var App = new AppView;
+})
+;
