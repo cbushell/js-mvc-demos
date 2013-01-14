@@ -1,52 +1,71 @@
 $(function () {
 
-    var Tweet = Backbone.Model.extend();
+    var Tweet = Backbone.Model.extend({
+    });
 
     var TweetList = Backbone.Collection.extend({
-        model:Tweet,
-
-        url:function () {
-            return "https://api.twitter.com/1/statuses/user_timeline.json?include_entities=true&include_rts=true&screen_name=chrisbushelloz&count=10";
-        }
+        model:Tweet
     });
 
     var TweetView = Backbone.View.extend({
+        tagName:'li',
+
+        render:function (eventName) {
+            $(this.el).html(this.model.attributes.text);
+            return this;
+        }
     });
 
-    var Tweets = new TweetList;
+    var TweetListView = Backbone.View.extend({
+        el:'#tweet-list',
+
+        initialize:function () {
+            this.listenTo(this.model, 'add', this.render);
+            this.listenTo(this.model, 'reset', this.render);
+        },
+
+        render:function (eventName) {
+            $(this.el).html("");
+
+            _.each(this.model.models, function (tweet) {
+                $(this.el).append(new TweetView({model:tweet}).render().el);
+            }, this);
+        }
+    });
 
 
     var AppView = Backbone.View.extend({
-            el:$("#foobarbaz-app"),
+        el:$("#foobarbaz-app"),
 
-            events:{
-                "keypress #twitter-id":"twitterSearch"
-            },
+        events:{
+            "keypress #twitter-id":"twitterSearch"
+        },
 
-            initialize:function () {
-                this.input = this.$("#twitter-id");
-            },
+        initialize:function () {
+            this.input = this.$("#twitter-id");
+            this.tweets = new TweetList();
+            this.tweetListView = new TweetListView({model:this.tweets});
+        },
 
-            twitterSearch:function (e) {
-                if (e.keyCode != 13) return;
-                if (!this.input.val()) return;
+        twitterSearch:function (e) {
+            if (e.keyCode != 13) return;
+            if (!this.input.val()) return;
 
-                $.ajax({
-                    dataType:"json",
-                    url:"http://search.twitter.com/search.json?callback=?&q=" + this.input.val(),
-                    success:function (json) {
-                        $.each(json.results, function (k, v) {
-                            console.log(v);
-                        });
-                    }
-                });
+            this.tweets.reset();
 
-//            Tweets.create({name:this.input.val()});
-                this.input.val('');
-            }
-        })
-        ;
+            var self = this;
+
+            $.ajax({
+                dataType:"json",
+                url:"http://search.twitter.com/search.json?callback=?&q=" + this.input.val(),
+                success:function (json) {
+                    self.tweets.add(json.results);
+                }
+            });
+
+            this.input.val('');
+        }
+    });
 
     var App = new AppView;
-})
-;
+});
