@@ -35,7 +35,7 @@ $(function () {
 
 
     var AppView = Backbone.View.extend({
-        el:$("#foobarbaz-app"),
+        el:$("#twittersearch-app"),
 
         events:{
             "keypress #twitter-id":"twitterSearch"
