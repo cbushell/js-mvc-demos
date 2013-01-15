@@ -11,10 +11,12 @@
     <form data-bind="submit: twitterSearch">
         <input id="search-text" type="text" placeholder="Twitter Id"
                data-bind="value: searchText">
-
     </form>
 
-    <ul id="tweet-list"></ul>
+    <ul data-bind="foreach: tweets">
+        <li data-bind="text: text"></li>
+    </ul>
+
 </div>
 <script src="../js/jquery-1.8.3.js"></script>
 <script src="../js/underscore-1.4.3.js"></script>
