@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link href="../bootstrap-2.2.2/css/bootstrap.css" rel="stylesheet" media="screen">
+</head>
+<body>
+<div class="container" id="twittersearch-app">
+    <h1>Twitter search</h1>
+
+    <form data-bind="submit: twitterSearch">
+        <input id="search-text" type="text" placeholder="Twitter Id"
+               data-bind="value: searchText">
+
+    </form>
+
+    <ul id="tweet-list"></ul>
+</div>
+<script src="../js/jquery-1.8.3.js"></script>
+<script src="../js/underscore-1.4.3.js"></script>
+<script src="../bootstrap-2.2.2/js/bootstrap.js"></script>
+<script src="../js/knockout-2.2.2.js"></script>
+<script src="../js/twittersearch-knockout.js"></script>
+</body>
+</html>
